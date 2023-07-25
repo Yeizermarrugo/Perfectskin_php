@@ -1,0 +1,22 @@
+{
+    "name": "yeizermarrugo/app-salon",
+    "description": "Agenda de citas",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "MVC\\": "./",
+            "Controllers\\": "./controllers",
+            "Model\\": "./models",
+            "Classes\\": "./classes"
+        }
+    },
+    "authors": [
+        {
+            "name": "Yeizer Marrugo",
+            "email": "yeizermarrugo@gmail.com"
+        }
+    ],
+    "require": {
+        "phpmailer/phpmailer": "^6.8"
+    }
+}

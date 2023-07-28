@@ -47,5 +47,35 @@ class Email {
 
     }
 
+    public function send_email_forgot(){
+         //Crear objeto email
+         $mail = new PHPMailer();
+         $mail->isSMTP();
+         $mail->Host = 'sandbox.smtp.mailtrap.io';
+         $mail->SMTPAuth = true;
+         $mail->Port = 2525;
+         $mail->Username = '2cc439c567232c';
+         $mail->Password = '7cbd7298357c07';
+ 
+         $mail->setFrom('perfectskin@gmail.com');
+         $mail->addAddress($this->email);
+         $mail->Subject ='Reestablece tu password - Laura Nuñez PerfectSkin';
+ 
+         $mail->isHTML(TRUE);
+         $mail->CharSet='UTF-8';
+ 
+         $contenido = "<html>";
+         $contenido .="<head><title>Confirmar Correo Electrónico</title></head>";
+         $contenido .= "<p><strong> Hola " .$this->name . "</strong> Has solicitado reestablecer tu contraseña en Laura Nuñez Perfectskin, solo debes confirmar presionansdo el siguiente enlace</p>";
+         $contenido .= "<p>Presiona aqui: <a href = 'http://localhost:3000/recovery-password?token=". $this->token ." '>Reestablecer Password <a/></p>";
+         $contenido .= "<p>Si tu no solicitaste esta cuenta, puedes ignorar este mensaje</p>";
+         $contenido .= "</html>";
+ 
+         $mail->Body = $contenido;
+ 
+         //Enviar correo
+         $mail->send();
+    }
+
 
 }

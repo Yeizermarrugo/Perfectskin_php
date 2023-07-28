@@ -8,70 +8,67 @@ Este proyecto es un backend con NodeJS para una aplicación de agenda de citas. 
 
 ## Usuarios
 
-- /api/v1/perfectskin/users
+- /
 - GET (ADMIN)
 
-- /:id
+- /
 - - GET
 - - PATCH (ADMIN)
 - - DELETE (ADMIN)
 
-- /me
+- /
 - - GET
 - - PATCH
 - - DELETE
 
 ## Inicio Sesion
-- /api/v1/perfectskin/auth/login
+- /
 - - POST 
 
 ## Registrarse
-- /api/v1/perfectskin/auth/register
+- /
 - - POST
 
 ## Recuperar contraseña
-- /api/v1/perfectskin/auth/password-recovery
+- /
 - - POST
 - - PATCH
 
 ## Servicios
-- /api/v1/perfectskin/servicios
+- /
 - GET
 - POST (ADMIN)
 
-- /api/v1/perfectskin/servicios/:id
+- /
 -GET
 -PATCH (ADMIN)
 - DELETE (ADMIN)
 
 ## Horarios (Horas de atencion por dias)
-- /api/v1/perfectskin/horas
+- /
 - GET
 - POST (ADMIN)
 
-- /api/v1/perfectskin/horas/:id
+- /
 - GET
 - PATCH (ADMIN)
 - DELETE (ADMIN)
 
 # Day off
-- /api/v1/perfectskin/dayoff
+- /
 - GET
 - POST (ADMIN)
 
-- /:fecha
-- GET
-- DELETE (ADMIN)
 
 ## Citas
-- /api/v1/perfectskin/citas
+- /citas
 - GET
 - POST (Logged In)
 
-- /api/v1/perfectskin/citas/:me
+- /:me
 - GET (Logged In)
 
-- /api/v1/perfectskin/citas/:id
+- /:id
 - GET (Logged In)
 - PATCH (Logged In)
 - DELETE (Logged In)

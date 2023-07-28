@@ -57,13 +57,75 @@ class LoginController{
     }
 
     public static function forgot(Router $router) {
+
+        $alertas = [];
+
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $auth = new User($_POST);
+            $alertas = $auth->validate_email();
+
+            if(empty($alertas)){
+                // Comprobar que exista el usuario
+                $user = User::where('email', $auth->email);
+
+                if($user && $user->confirmado === "1"){
+                    // Generar un token
+                    $user->token();
+                    $user->guardar();
+
+                    //Enviar email
+                    $email = new Email($user->name, $user->email, $user->token);
+                   $email->send_email_forgot();
+                  User::setAlerta('exito','Revisa tu email');
+                }else{
+                    User::setAlerta('error','El Usuario no existe o no esta confirmado');
+                }
+            }
+        }
+        $alertas = User::getAlertas();
+
         $router->render('auth/forgot-password',[
-            
-        ]);
+            'alertas' => $alertas
+        ]);        
     }
 
-    public static function recovery() {
-        echo "Desde el recovery";
+    public static function recovery(Router $router) {
+        $alertas = [];
+        $error = false;
+
+        $token = s($_GET['token']);
+        $user = User::where('token', $token);
+        if(empty($user)){
+            User::setAlerta('error', 'Token no valido');
+            $error = true;
+        }
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $password = new User($_POST);
+            $alertas = $password->validate_password();
+            
+            if(empty($alertas)){
+                // Hashear el Password
+                $user->password = null;
+                $user->password = $password->password;
+                $user->hashPassword();
+                $user->token = null;
+                $result = $user->guardar();
+                if($result){
+                    User::setAlerta('exito', 'Password actualizado');
+                    $alertas = User::getAlertas();
+                    $router->render('auth/login', [
+                        'alertas' => $alertas
+                    ]);
+                }
+            }
+            
+        }
+
+        $alertas = User::getAlertas();
+        $router->render('auth/recovery-password', [
+            'alertas' => $alertas,
+            'error' => $error,
+        ]);
     }
 
     public static function register(Router $router)

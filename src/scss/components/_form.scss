@@ -21,8 +21,8 @@
         border-radius: 1rem;
 
         &:disabled {
-            background-color: lighten(v.$negro, 30%);
-            color: v.$blanco;
+            background-color: lighten(v.$palorosa, 10%);
+            color: v.$negro;
             cursor: not-allowed;
         }
     }

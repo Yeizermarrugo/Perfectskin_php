@@ -16,7 +16,8 @@
         width: 100%;
         margin-bottom: 1rem;
         text-transform: uppercase;
-        font-weight: bold;
+        font-weight: v.$bold;
+        transition: background-color 300ms ease;
 
         &:hover{
             cursor: pointer;

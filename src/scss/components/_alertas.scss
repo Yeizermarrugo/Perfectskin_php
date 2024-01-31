@@ -1,7 +1,7 @@
 @use 'base/variables' as v;
 @use 'base/mixins' as m;
 
-.alerta{
+.alerta {
     padding: calc(v.$separacion/4);
     background-color: v.$blanco;
     width: 100%;
@@ -9,12 +9,23 @@
     margin-bottom: 2rem;
     text-align: center;
     font-weight: v.$bold;
+    text-transform: uppercase;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
 
-    &.error{
+    &.error {
         background-color: v.$rojo;
     }
 
-    &.exito{
+    &.exito {
         background-color: v.$verde;
+    }
+
+    &.warning {
+        background-color: v.$naranja;
+    }
+
+    &.desvanecer {
+        opacity: 0;
     }
 }

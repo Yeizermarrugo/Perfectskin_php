@@ -41,3 +41,13 @@
         }
     }
 }
+
+@media (max-width: 1201px) {
+    .listado-servicios {
+        display: grid;
+        gap: 2rem;
+        @include m.tablet {
+            @include m.grid(1, 2rem);
+        }
+}
+}

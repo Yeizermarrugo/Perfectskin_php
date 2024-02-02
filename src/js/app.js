@@ -278,46 +278,18 @@ function mostraResumen() {
   //Formatear el div de resumen
   const { name, fecha, hora, servicios } = cita;
 
-  const fechaActual = new Date(fecha);
-
-  // Días de la semana en español
-  const diasSemana = [
-    "Domingo",
-    "Lunes",
-    "Martes",
-    "Miércoles",
-    "Jueves",
-    "Viernes",
-    "Sábado",
-  ];
-
-  // Meses del año en español
-  const meses = [
-    "Enero",
-    "Febrero",
-    "Marzo",
-    "Abril",
-    "Mayo",
-    "Junio",
-    "Julio",
-    "Agosto",
-    "Septiembre",
-    "Octubre",
-    "Noviembre",
-    "Diciembre",
-  ];
-
-  // Obtener el día, el nombre del día, el mes y el año
-  const dia = fechaActual.getDate() + 1;
-  const nombreDia = diasSemana[fechaActual.getDay() + 1];
-  const nombreMes = meses[fechaActual.getMonth()];
-  const anio = fechaActual.getFullYear();
-
-  // Formatear la fecha como "Dia(numero y nombre) Mes(nombre) Anio"
-  const fechaFormateada = `${nombreDia} ${dia} de ${nombreMes} ${anio}`;
-
   const nombreCliente = document.createElement("P");
   nombreCliente.innerHTML = `<span>Nombre:</span>${name}`;
+  
+  const fechaObj = new Date(fecha);
+  const mes = fechaObj.getMonth();
+  const dia = fechaObj.getDate() +2;
+  const year = fechaObj.getFullYear();
+
+  const fechaUTC = new Date(Date.UTC(year, mes, dia));
+
+  const opciones = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
+  const fechaFormateada = fechaUTC.toLocaleDateString("es-ES", opciones)
 
   const fechaCita = document.createElement("P");
   fechaCita.innerHTML = `<span>Fecha: </span>${fechaFormateada}`;
@@ -325,6 +297,13 @@ function mostraResumen() {
   const horaCita = document.createElement("P");
   horaCita.innerHTML = `<span>Hora: </span>${hora}`;
 
+  //Heading para servicios en resumen
+  const heading = document.createElement("H3");
+  heading.textContent = "Resumen de cita";
+
+  resumen.appendChild(heading);
+
+  //Mostrando los servicios
   servicios.forEach((servicio) => {
     const { id, price, name } = servicio;
     const contenedorServicio = document.createElement("DIV");

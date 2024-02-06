@@ -3,7 +3,7 @@ const pasoInicial = 1;
 const pasoFinal = 3;
 
 const cita = {
-  //id: "",
+  id: "",
   name: "",
   hora: "",
   fecha: "",
@@ -12,14 +12,6 @@ const cita = {
 
 document.addEventListener("DOMContentLoaded", function () {
   iniciarApp();
-  flatpickr("#hora", {
-    enableTime: true,
-    noCalendar: true,
-    dateFormat: "H:i",
-    minuteIncrement: 60, // Fija los minutos en 00
-    minTime: "08:00",
-    maxTime: "17:00",
-  });
 });
 
 function iniciarApp() {
@@ -29,10 +21,12 @@ function iniciarApp() {
   siguiente();
   anterior();
   consultarAPI();
+  idCliente();
   nombreCliente();
   seleccionarFecha();
-  seleccionarHora();
-  mostraResumen();
+  buscarHorasDisponibles();
+  mostrarResumen();
+  reservarCita();
 }
 
 function mostrarSeccion() {
@@ -79,7 +73,7 @@ function paginador() {
   } else if (paso === 3) {
     anterior.classList.remove("ocultar");
     siguiente.classList.add("ocultar");
-    mostraResumen();
+    mostrarResumen();
   } else {
     anterior.classList.remove("ocultar");
     siguiente.classList.remove("ocultar");
@@ -167,70 +161,76 @@ function seleccionarServicio(servicio) {
   }
 }
 
+function idCliente() {
+  cita.id = document.querySelector("#id").value;
+}
+
 function nombreCliente() {
   cita.name = document.querySelector("#nombre").value;
 }
 
 function seleccionarFecha() {
   const inputFecha = document.querySelector("#fecha");
-  const inputHora = document.querySelector("#hora");
-  let alertaMostrada = false;
 
-  inputFecha.addEventListener("input", function (e) {
-    inputHora.value = "";
-    const dia = new Date(e.target.value).getUTCDay();
-
-    if ([0].includes(dia)) {
-      // Solo mostrar la alerta si no se ha mostrado antes
-      if (!alertaMostrada) {
-        alertaMostrada = true;
-        mostrarAlerta("Domingo no hay servicio disponible", "error", ".form");
-      }
-      e.target.value = "";
-    } else if ([6].includes(dia)) {
-      if (!alertaMostrada) {
-        alertaMostrada = true;
-        mostrarAlerta(
-          "Sabado atendemos de 09:00 AM a 03:00 PM",
-          "warning",
-          ".form"
-        );
-      }
-      cita.fecha = e.target.value;
-    } else {
-      // Restablecer la variable cuando la fecha es válida
-      alertaMostrada = false;
-      cita.fecha = e.target.value;
-    }
-  });
+  inputFecha.addEventListener("change", buscarHorasDisponibles);
 }
 
-function seleccionarHora() {
-  const inputHora = document.querySelector("#hora");
-  const inputFecha = document.querySelector("#fecha");
-  let alertaMostrada = false;
+async function buscarHorasDisponibles(event) {
+  const fechaSeleccionada = event.target.value;
 
-  inputHora.addEventListener("input", function (event) {
-    const fechaSeleccionada = new Date(inputFecha.value);
-    const dia = fechaSeleccionada.getUTCDay();
-    const horaCita = event.target.value;
-    const hora = parseInt(horaCita.split(":")[0]);
+  const dia = new Date(fechaSeleccionada).getUTCDay();
+  try {
+    const url = `http://localhost:3000/api/citasPorFecha?fecha=${fechaSeleccionada}`;
+    const resultado = await fetch(url);
+    const servicios = await resultado.json();
 
-    if (dia === 6 && (hora < 9 || hora > 15)) {
-      // Mostrar la alerta si no se ha mostrado antes
-      if (!alertaMostrada) {
-        alertaMostrada = true;
-        mostrarAlerta(
-          `La hora debe ser entre las 09:00 AM y 3:00 PM`,
-          "error",
-          ".form"
-        );
-      }
-      inputHora.value = "";
-    } else {
-      alertaMostrada = false;
-      cita.hora = event.target.value;
+    if ([6].includes(dia)) {
+      // Es sábado, mostrar alerta y ajustar la fecha
+      mostrarAlerta(
+        "Los sábados trabajamos de 10:00 AM a 2:00 PM",
+        "warning",
+        ".form"
+      );
+      cita.fecha = fechaSeleccionada;
+    } else if ([0].includes(dia)) {
+      // Es domingo, mostrar alerta y ajustar la fecha
+      mostrarAlerta("Los domingos no trabajamos", "error", ".form");
+      document.getElementById("fecha").value = "";
+      document.getElementById("lista-horas").style.display = "none";
+      document.getElementById("hora-placeholder").style.display =
+        "inline-block";
+      return;
     }
+    // Mostrar las horas disponibles
+    mostrarHorasDisponibles(servicios.horas_disponibles);
+    cita.fecha = event.target.value;
+    console.log(cita);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function mostrarHorasDisponibles(horasDisponibles) {
+  const selectHoras = document.getElementById("lista-horas");
+  const horaPlaceholder = document.getElementById("hora-placeholder");
+
+  // Limpiar opciones previas
+  selectHoras.innerHTML = "";
+
+  // Agregar las horas disponibles como opciones
+  horasDisponibles.forEach((hora) => {
+    const option = document.createElement("option");
+    option.value = hora;
+    option.textContent = hora;
+    selectHoras.appendChild(option);
+  });
+
+  // Mostrar el select y ocultar el span
+  selectHoras.style.display = "block";
+  horaPlaceholder.style.display = "none";
+
+  selectHoras.addEventListener("change", function (e) {
+    cita.hora = e.target.value;
     console.log(cita);
   });
 }
@@ -261,7 +261,7 @@ function mostrarAlerta(mensaje, tipo, elemento, desaparece = true) {
   }
 }
 
-function mostraResumen() {
+function mostrarResumen() {
   const resumen = document.querySelector(".contenido-resumen");
 
   //Limpiar contenido del resumen
@@ -278,29 +278,9 @@ function mostraResumen() {
   //Formatear el div de resumen
   const { name, fecha, hora, servicios } = cita;
 
-  const nombreCliente = document.createElement("P");
-  nombreCliente.innerHTML = `<span>Nombre:</span>${name}`;
-  
-  const fechaObj = new Date(fecha);
-  const mes = fechaObj.getMonth();
-  const dia = fechaObj.getDate() +2;
-  const year = fechaObj.getFullYear();
-
-  const fechaUTC = new Date(Date.UTC(year, mes, dia));
-
-  const opciones = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
-  const fechaFormateada = fechaUTC.toLocaleDateString("es-ES", opciones)
-
-  const fechaCita = document.createElement("P");
-  fechaCita.innerHTML = `<span>Fecha: </span>${fechaFormateada}`;
-
-  const horaCita = document.createElement("P");
-  horaCita.innerHTML = `<span>Hora: </span>${hora}`;
-
   //Heading para servicios en resumen
   const heading = document.createElement("H3");
   heading.textContent = "Resumen de cita";
-
   resumen.appendChild(heading);
 
   //Mostrando los servicios
@@ -319,8 +299,86 @@ function mostraResumen() {
     contenedorServicio.appendChild(precioServicio);
     resumen.appendChild(contenedorServicio);
   });
+  const nombreCliente = document.createElement("P");
+  nombreCliente.innerHTML = `<span>Nombre:</span>${name}`;
+
+  const fechaObj = new Date(fecha);
+  const mes = fechaObj.getMonth();
+  const dia = fechaObj.getDate() + 2;
+  const year = fechaObj.getFullYear();
+
+  const fechaUTC = new Date(Date.UTC(year, mes, dia));
+
+  const opciones = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  const fechaFormateada = fechaUTC.toLocaleDateString("es-ES", opciones);
+
+  const fechaCita = document.createElement("P");
+  fechaCita.innerHTML = `<span>Fecha: </span>${fechaFormateada}`;
+
+  const horaCita = document.createElement("P");
+  horaCita.innerHTML = `<span>Hora: </span>${hora}`;
+
+  const botonReservar = document.createElement("BUTTON");
+  botonReservar.classList.add("boton");
+  botonReservar.textContent = "Reservar Cita";
+  botonReservar.onclick = reservarCita;
 
   resumen.appendChild(fechaCita);
   resumen.appendChild(horaCita);
   resumen.appendChild(nombreCliente);
+  resumen.appendChild(botonReservar);
+}
+
+async function reservarCita() {
+  const { name, servicios, fecha, hora, id } = cita;
+
+  const idServicios = servicios.map((servicio) => servicio.id);
+
+  if (!id || !name || !fecha || !hora || servicios.length === 0) {
+    mostrarAlerta("Hacen falta datos", "error", ".contenido-resumen", false);
+    return;
+  }
+
+  const datos = new FormData();
+  datos.append("fecha", fecha);
+  datos.append("hora", hora);
+  datos.append("userId", id);
+  datos.append("servicioId", idServicios);
+
+  //Peticion API
+  try {
+    // Petición hacia la api
+    const url = "http://localhost:3000/api/citas";
+    const respuesta = await fetch(url, {
+      method: "POST",
+      body: datos,
+    });
+
+    const resultado = await respuesta.json();
+    console.log(resultado);
+
+    if (resultado.resultado) {
+      Swal.fire({
+        icon: "success",
+        title: "Cita Creada",
+        text: "Tu cita fue creada correctamente",
+        button: "OK",
+      }).then(() => {
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      });
+    }
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Hubo un error al guardar la cita",
+    });
+  }
 }

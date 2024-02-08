@@ -36,6 +36,7 @@ $router->get('/cita', [CitaController::class, 'index']);
 //API citas
 $router->get('/api/servicios', [APIController::class, 'index']);
 $router->get('/api/citasPorFecha', [APIController::class, 'citasPorFecha']);
+$router->get('/api/citaDisponible', [APIController::class, 'citaDisponible']);
 $router->post('/api/citas', [APIController::class, 'guardar']);
 
 // Comprueba y valida las rutas, que existan y les asigna las funciones del Controlador

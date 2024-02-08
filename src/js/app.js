@@ -340,45 +340,72 @@ async function reservarCita() {
   const idServicios = servicios.map((servicio) => servicio.id);
 
   if (!id || !name || !fecha || !hora || servicios.length === 0) {
-    mostrarAlerta("Hacen falta datos", "error", ".contenido-resumen", false);
+    mostrarAlerta("Faltan datos", "error", ".contenido-resumen", false);
     return;
   }
 
-  const datos = new FormData();
-  datos.append("fecha", fecha);
-  datos.append("hora", hora);
-  datos.append("userId", id);
-  datos.append("servicioId", idServicios);
-
-  //Peticion API
+  // Verificar disponibilidad de la cita
   try {
-    // Petición hacia la api
-    const url = "http://localhost:3000/api/citas";
-    const respuesta = await fetch(url, {
-      method: "POST",
-      body: datos,
-    });
+    // Formatear la hora para incluir los segundos si no están presentes
+    const horaFormateada = hora.includes(":") ? `${hora}:00` : hora + ":00:00";
 
-    const resultado = await respuesta.json();
-    console.log(resultado);
+    const urlDisponibilidad = `http://localhost:3000/api/citaDisponible?fecha=${fecha}&hora=${horaFormateada}`;
+    const respuestaDisponibilidad = await fetch(urlDisponibilidad);
 
-    if (resultado.resultado) {
+    console.log("disponible: ", respuestaDisponibilidad.json());
+  
+    if(respuestaDisponibilidad){
+      const datos = new FormData();
+      datos.append("fecha", fecha);
+      datos.append("hora", hora);
+      datos.append("userId", id);
+      datos.append("servicioId", idServicios);
+    
+      // Realizar la petición al servidor
+      try {
+        const url = "http://localhost:3000/api/citas";
+        const respuesta = await fetch(url, {
+          method: "POST",
+          body: datos,
+        });
+    
+        const resultado = await respuesta.json();
+        console.log(resultado);
+    
+        if (resultado.resultado) {
+          Swal.fire({
+            icon: "success",
+            title: "Cita Creada",
+            text: "Tu cita fue creada correctamente",
+            button: "OK",
+          }).then(() => {
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
+          });
+        }
+      } catch (error) {
+        console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo un error al guardar la cita",
+        });
+      }
+    }
+    else{
       Swal.fire({
-        icon: "success",
-        title: "Cita Creada",
-        text: "Tu cita fue creada correctamente",
-        button: "OK",
-      }).then(() => {
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+        icon: "error",
+        title: "Error",
+        text: "Fecha y hora no disponible",
       });
     }
+    // Preparar los datos para enviar al servidor
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: "Hubo un error al guardar la cita",
-    });
+    console.log(error);
+    mostrarAlerta("Hubo un error al verificar la disponibilidad de la cita", "error", ".form");
+    return;
   }
+
+  
 }

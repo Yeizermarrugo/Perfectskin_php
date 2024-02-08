@@ -21,8 +21,8 @@ function mostrarSeccion() {
   e && e.classList.remove("mostrar");
   const t = "#paso-" + paso;
   document.querySelector(t).classList.add("mostrar");
-  const a = document.querySelector(".actual");
-  a && a.classList.remove("actual");
+  const o = document.querySelector(".actual");
+  o && o.classList.remove("actual");
   document.querySelector(`[data-paso="${paso}"]`).classList.add("actual");
 }
 function tabs() {
@@ -65,11 +65,11 @@ async function consultarAPI() {
 }
 function mostrarServicios(e) {
   e.forEach((e) => {
-    const { id: t, name: a, price: o } = e,
+    const { id: t, name: o, price: a } = e,
       n = document.createElement("P");
-    n.classList.add("nombre-servicio"), (n.textContent = a);
+    n.classList.add("nombre-servicio"), (n.textContent = o);
     const c = document.createElement("P");
-    c.classList.add("precio-servicio"), (c.textContent = "" + o);
+    c.classList.add("precio-servicio"), (c.textContent = "" + a);
     const r = document.createElement("DIV");
     r.classList.add("servicio"),
       (r.dataset.idServicio = t),
@@ -83,15 +83,15 @@ function mostrarServicios(e) {
 }
 function seleccionarServicio(e) {
   const { id: t } = e,
-    { servicios: a } = cita,
-    o = document.querySelector(`[data-id-servicio="${t}"]`);
-  if (a.some((e) => e.id === t))
-    (cita.servicios = a.filter((e) => e.id !== t)),
-      o.classList.remove("seleccionado");
+    { servicios: o } = cita,
+    a = document.querySelector(`[data-id-servicio="${t}"]`);
+  if (o.some((e) => e.id === t))
+    (cita.servicios = o.filter((e) => e.id !== t)),
+      a.classList.remove("seleccionado");
   else {
-    if (a.length > 0)
+    if (o.length > 0)
       return void alert("Solo puedes tomar un servicio a la vez");
-    (cita.servicios = [...a, e]), o.classList.add("seleccionado");
+    (cita.servicios = [...o, e]), a.classList.add("seleccionado");
   }
 }
 function idCliente() {
@@ -107,19 +107,19 @@ function seleccionarFecha() {
 }
 async function buscarHorasDisponibles(e) {
   const t = e.target.value,
-    a = new Date(t).getUTCDay();
+    o = new Date(t).getUTCDay();
   try {
-    const o = "http://localhost:3000/api/citasPorFecha?fecha=" + t,
-      n = await fetch(o),
+    const a = "http://localhost:3000/api/citasPorFecha?fecha=" + t,
+      n = await fetch(a),
       c = await n.json();
-    if ([6].includes(a))
+    if ([6].includes(o))
       mostrarAlerta(
         "Los sábados trabajamos de 10:00 AM a 2:00 PM",
         "warning",
         ".form"
       ),
         (cita.fecha = t);
-    else if ([0].includes(a))
+    else if ([0].includes(o))
       return (
         mostrarAlerta("Los domingos no trabajamos", "error", ".form"),
         (document.getElementById("fecha").value = ""),
@@ -136,25 +136,25 @@ async function buscarHorasDisponibles(e) {
 }
 function mostrarHorasDisponibles(e) {
   const t = document.getElementById("lista-horas"),
-    a = document.getElementById("hora-placeholder");
+    o = document.getElementById("hora-placeholder");
   (t.innerHTML = ""),
     e.forEach((e) => {
-      const a = document.createElement("option");
-      (a.value = e), (a.textContent = e), t.appendChild(a);
+      const o = document.createElement("option");
+      (o.value = e), (o.textContent = e), t.appendChild(o);
     }),
     (t.style.display = "block"),
-    (a.style.display = "none"),
+    (o.style.display = "none"),
     t.addEventListener("change", function (e) {
       (cita.hora = e.target.value), console.log(cita);
     });
 }
-function mostrarAlerta(e, t, a, o = !0) {
+function mostrarAlerta(e, t, o, a = !0) {
   const n = document.querySelector(".alerta");
   n && n.remove();
   const c = document.createElement("DIV");
   (c.textContent = e), c.classList.add("alerta"), c.classList.add(t);
-  document.querySelector(a).appendChild(c),
-    o &&
+  document.querySelector(o).appendChild(c),
+    a &&
       (setTimeout(() => {
         c.classList.add("desvanecer");
       }, 3e3),
@@ -172,29 +172,29 @@ function mostrarResumen() {
       ".contenido-resumen",
       !1
     );
-  const { name: t, fecha: a, hora: o, servicios: n } = cita,
+  const { name: t, fecha: o, hora: a, servicios: n } = cita,
     c = document.createElement("H3");
   (c.textContent = "Resumen de cita"),
     e.appendChild(c),
     n.forEach((t) => {
-      const { id: a, price: o, name: n } = t,
+      const { id: o, price: a, name: n } = t,
         c = document.createElement("DIV");
       c.classList.add("contenedor-servico");
       const r = document.createElement("P");
       r.textContent = n;
-      const s = document.createElement("P");
-      (s.innerHTML = "<span>Precio: </span>" + o),
+      const i = document.createElement("P");
+      (i.innerHTML = "<span>Precio: </span>" + a),
         c.appendChild(r),
-        c.appendChild(s),
+        c.appendChild(i),
         e.appendChild(c);
     });
   const r = document.createElement("P");
   r.innerHTML = "<span>Nombre:</span>" + t;
-  const s = new Date(a),
-    i = s.getMonth(),
-    l = s.getDate() + 2,
-    d = s.getFullYear(),
-    u = new Date(Date.UTC(d, i, l)).toLocaleDateString("es-ES", {
+  const i = new Date(o),
+    s = i.getMonth(),
+    l = i.getDate() + 2,
+    d = i.getFullYear(),
+    u = new Date(Date.UTC(d, s, l)).toLocaleDateString("es-ES", {
       weekday: "long",
       year: "numeric",
       month: "long",
@@ -203,7 +203,7 @@ function mostrarResumen() {
     m = document.createElement("P");
   m.innerHTML = "<span>Fecha: </span>" + u;
   const p = document.createElement("P");
-  p.innerHTML = "<span>Hora: </span>" + o;
+  p.innerHTML = "<span>Hora: </span>" + a;
   const h = document.createElement("BUTTON");
   h.classList.add("boton"),
     (h.textContent = "Reservar Cita"),
@@ -214,43 +214,61 @@ function mostrarResumen() {
     e.appendChild(h);
 }
 async function reservarCita() {
-  const { name: e, servicios: t, fecha: a, hora: o, id: n } = cita,
+  const { name: e, servicios: t, fecha: o, hora: a, id: n } = cita,
     c = t.map((e) => e.id);
-  if (!(n && e && a && o && 0 !== t.length))
-    return void mostrarAlerta(
-      "Hacen falta datos",
-      "error",
-      ".contenido-resumen",
-      !1
-    );
-  const r = new FormData();
-  r.append("fecha", a),
-    r.append("hora", o),
-    r.append("userId", n),
-    r.append("servicioId", c);
-  try {
-    const e = "http://localhost:3000/api/citas",
-      t = await fetch(e, { method: "POST", body: r }),
-      a = await t.json();
-    console.log(a),
-      a.resultado &&
+  if (n && e && o && a && 0 !== t.length)
+    try {
+      const e = `http://localhost:3000/api/citaDisponible?fecha=${o}&hora=${
+          a.includes(":") ? a + ":00" : a + ":00:00"
+        }`,
+        t = await fetch(e);
+      if ((console.log("disponible: ", t.json()), t)) {
+        const e = new FormData();
+        e.append("fecha", o),
+          e.append("hora", a),
+          e.append("userId", n),
+          e.append("servicioId", c);
+        try {
+          const t = "http://localhost:3000/api/citas",
+            o = await fetch(t, { method: "POST", body: e }),
+            a = await o.json();
+          console.log(a),
+            a.resultado &&
+              Swal.fire({
+                icon: "success",
+                title: "Cita Creada",
+                text: "Tu cita fue creada correctamente",
+                button: "OK",
+              }).then(() => {
+                setTimeout(() => {
+                  window.location.reload();
+                }, 1e3);
+              });
+        } catch (e) {
+          console.log(e),
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Hubo un error al guardar la cita",
+            });
+        }
+      } else
         Swal.fire({
-          icon: "success",
-          title: "Cita Creada",
-          text: "Tu cita fue creada correctamente",
-          button: "OK",
-        }).then(() => {
-          setTimeout(() => {
-            window.location.reload();
-          }, 1e3);
+          icon: "error",
+          title: "Error",
+          text: "Fecha y hora no disponible",
         });
-  } catch (e) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: "Hubo un error al guardar la cita",
-    });
-  }
+    } catch (e) {
+      return (
+        console.log(e),
+        void mostrarAlerta(
+          "Hubo un error al verificar la disponibilidad de la cita",
+          "error",
+          ".form"
+        )
+      );
+    }
+  else mostrarAlerta("Faltan datos", "error", ".contenido-resumen", !1);
 }
 document.addEventListener("DOMContentLoaded", function () {
   iniciarApp();

@@ -30,31 +30,43 @@ class ActiveRecord {
     }
 
     // Consulta SQL para crear un objeto en Memoria
-    // Consulta SQL para crear un objeto en Memoria
-public static function consultarSQL($query) {
-    // Consultar la base de datos
-    $resultado = self::$db->query($query);
+    public static function consultarSQL($query) {
+        // Consultar la base de datos
+        $resultado = self::$db->query($query);
 
-    // Verificar si ocurrió algún error al ejecutar la consulta
-    if (!$resultado) {
-        // Manejar el error y mostrar un mensaje de error
-        echo "Error al ejecutar la consulta: " . self::$db->error;
-        return false;
+        // Iterar los resultados
+        $array = [];
+        while($registro = $resultado->fetch_assoc()) {
+            $array[] = static::crearObjeto($registro);
+        }
+
+        // liberar la memoria
+        $resultado->free();
+
+        // retornar los resultados
+        return $array;
     }
 
-    // Iterar los resultados
-    $array = [];
-    while($registro = $resultado->fetch_assoc()) {
-        $array[] = static::crearObjeto($registro);
+    public static function consultarSQL2($query) {
+        // Consultar la base de datos
+        $resultado = self::$db->query($query);
+    
+        // Verificar si la consulta fue exitosa
+        if ($resultado !== false) {
+            // Obtener el resultado de la consulta como un array asociativo
+            $fila = $resultado->fetch_assoc();
+            
+            // Liberar la memoria
+            $resultado->free();
+            
+            // Retornar el resultado
+            return $fila;
+        } else {
+            // Si la consulta falla, retornar false
+            return false;
+        }
     }
-
-    // Liberar la memoria
-    $resultado->free();
-
-    // Retornar los resultados
-    return $array;
-}
-
+    
 
     // Crea el objeto en memoria que es igual al de la BD
     protected static function crearObjeto($registro) {

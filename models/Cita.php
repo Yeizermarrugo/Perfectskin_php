@@ -27,6 +27,17 @@ class Cita extends ActiveRecord{
         // Ejecutar la consulta utilizando el método estático de ActiveRecord
         return self::consultarSQL($consulta);
     }
+
+    public static function existeCita($fecha, $hora) {
+        // Formatear la hora con ceros en los segundos
+        $horaFormateada = date('H:i:s', strtotime($hora));
+    
+        // Preparar la consulta SQL para verificar si existe una cita para la fecha y hora especificadas
+        $consulta = "SELECT COUNT(*) as total FROM citas WHERE fecha = '{$fecha}' AND hora = '{$horaFormateada}'";
+    
+        // Ejecutar la consulta utilizando el método estático de ActiveRecord
+        return self::consultarSQL2($consulta);
+    }
     
     
 }

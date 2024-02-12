@@ -74,8 +74,6 @@ class APIController
         $fecha = $_POST['fecha'];
         $hora = $_POST['hora'];
 
-        $horaFormateada = date('H:i:s', strtotime($hora));
-
         //Verificar la disponibilidad de la cita
         $citaDisponible = self::citaDisponible();
 

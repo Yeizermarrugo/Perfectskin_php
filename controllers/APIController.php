@@ -3,6 +3,7 @@
 namespace Controllers;
 
 use Model\Cita;
+use Model\CitaServicio;
 use Model\Servicio;
 
 class APIController
@@ -81,18 +82,32 @@ class APIController
             // Si la cita no está disponible, devolver un mensaje de error
             echo json_encode(['disponible' => false, 'mensaje' => 'Fecha y hora no disponible']);
             return;
+        }else{
+
+            // Si la cita está disponible, guardarla en la base de datos
+            $cita = new Cita($_POST);
+            $resultado = $cita->guardar();
+            
+            $id = $resultado['id'];
+            
+            //Almacena el servicio con el Id de la cita
+            $idServicio = explode(',', $_POST['servicioId']);
+            
+            foreach($idServicio as $idServ){
+                $args = [
+                    'citaId' => $id,
+                    'servicioId' => $idServ
+                ];
+                $citaServicios = new CitaServicio($args);
+                $citaServicios->guardar();
+            }
+            
+            echo json_encode(['resultado' => $resultado]);
         }
-
-        // Si la cita está disponible, guardarla en la base de datos
-        $cita = new Cita($_POST);
-        $resultado = $cita->guardar();
-
-        echo json_encode($resultado);
     }
 
     public static function citaDisponible()
     {
-
         $fecha = $_POST['fecha'];
         $hora = $_POST['hora'];
 

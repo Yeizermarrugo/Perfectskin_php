@@ -1,6 +1,11 @@
 @use 'base/variables' as v;
 @use 'base/mixins' as m;
 
+.barra{
+    justify-content: flex-end;
+    align-items: flex-end;
+    color: v.$negro;   
+}
 .listado-servicios {
     display: grid;
     gap: 2rem;
@@ -50,4 +55,18 @@
             @include m.grid(1, 2rem);
         }
 }
+}
+
+@media (min-width: 330px) and (max-width: 767px) {
+    .barra{
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-end;
+        margin: -1rem;
+
+        p{
+            color: black;
+            font-weight: bold;
+        }
+    }
 }

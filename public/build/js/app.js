@@ -106,6 +106,7 @@ function seleccionarFecha() {
     .addEventListener("change", buscarHorasDisponibles);
 }
 async function buscarHorasDisponibles(e) {
+  if (!e) return void console.log("El evento no está definido");
   const t = e.target.value,
     o = new Date(t).getUTCDay();
   try {

@@ -176,6 +176,12 @@ function seleccionarFecha() {
 }
 
 async function buscarHorasDisponibles(event) {
+  if (!event) {
+    // Manejar el caso en que event no está definido
+    console.log("El evento no está definido");
+    return;
+  }
+
   const fechaSeleccionada = event.target.value;
 
   const dia = new Date(fechaSeleccionada).getUTCDay();
@@ -337,7 +343,7 @@ function mostrarResumen() {
 async function reservarCita() {
   const { name, servicios, fecha, hora, id } = cita;
 
-  const idServicios = servicios.map((servicio) => servicio.id);
+  const idServicio = servicios.map((servicio) => servicio.id);
 
   if (!id || !name || !fecha || !hora || servicios.length === 0) {
     mostrarAlerta("Faltan datos", "error", ".contenido-resumen", false);
@@ -359,7 +365,7 @@ async function reservarCita() {
       datos.append("fecha", fecha);
       datos.append("hora", hora);
       datos.append("userId", id);
-      datos.append("servicioId", idServicios);
+      datos.append("servicioId", idServicio);
     
       // Realizar la petición al servidor
       try {

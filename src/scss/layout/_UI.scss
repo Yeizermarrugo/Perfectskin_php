@@ -50,19 +50,42 @@
 }
 
 .barra {
-    margin: v.$separacion 0;
-
     @include m.tablet {
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
 
+    .usuario {
+        display: flex;
+        align-items: center; // Alinear verticalmente los elementos
+    }
+
+    .cerrar-sesion {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-left: 10px;
+        font-size: 12px;
+    }
+
     .boton {
-        @include m.boton(v.$negro, v.$blanco);
+        @include m.boton(v.$blanco);
         margin: 0;
     }
+
+    a>i {
+        margin-bottom: 0;
+    }
+
+    @include m.tablet {
+        a {
+            display: flex;
+            align-items: center;
+        }
+    }
 }
+
 
 .barra-servicios {
     margin-bottom: v.$separacion;
@@ -74,5 +97,23 @@
 
     .boton {
         margin: 0 0 1rem 0;
+    }
+}
+
+@media (min-width: 330px) and (max-width: 767px) {
+    .barra {
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-end;
+        margin: -1rem;
+
+        .usuario {
+            margin-right: 10px;
+        }
+
+        .cerrar-sesion {
+            margin-left: 0;
+            margin-right: 10px;
+        }
     }
 }

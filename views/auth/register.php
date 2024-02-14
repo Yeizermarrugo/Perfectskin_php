@@ -37,6 +37,7 @@
     id="phone" 
     name="phone"
     placeholder="Telefono"
+    maxlength="10"
     value="<?php echo s($user->phone); ?>"
     />
 </div>

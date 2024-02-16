@@ -147,8 +147,12 @@ class ActiveRecord {
      // Busca un registro por su token
      public static function where($columns, $value) {
         $query = "SELECT * FROM " . static::$table  ." WHERE ${columns} = '${value}'";
-        $resultado = self::consultarSQL($query);
-        return array_shift( $resultado ) ;
+        $resultado = self::consultarSQL2($query);
+        if ($resultado) {
+            return static::crearObjeto($resultado);
+        } else {
+            return null;
+        }
     }
 
     //Consulta plana de SQL(Utilizar cuando los metodos del modelo no son suficientes)

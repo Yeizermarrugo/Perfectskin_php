@@ -6,6 +6,7 @@ use Controllers\AdminController;
 use Controllers\APIController;
 use Controllers\LoginController;
 use Controllers\CitaController;
+use Controllers\ServicioController;
 use Model\Cita;
 use MVC\Router;
 
@@ -41,6 +42,15 @@ $router->get('/api/servicios', [APIController::class, 'index']);
 $router->get('/api/citasPorFecha', [APIController::class, 'citasPorFecha']);
 $router->get('/api/citaDisponible', [APIController::class, 'citaDisponible']);
 $router->post('/api/citas', [APIController::class, 'guardar']);
+$router->get('/api/citas/mis-citas', [APIController::class, 'misCitas']);
 
+
+//CRUD Servicios
+$router->get('/servicios', [ServicioController::class, 'index']);
+$router->get('/servicios/crear', [ServicioController::class, 'crear']);
+$router->post('/servicios/crear', [ServicioController::class, 'crear']);
+$router->get('/servicios/actualizar', [ServicioController::class, 'actualizar']);
+$router->post('/servicios/actualizar', [ServicioController::class, 'actualizar']);
+$router->post('/servicios/eliminar', [ServicioController::class, 'eliminar']);
 // Comprueba y valida las rutas, que existan y les asigna las funciones del Controlador
 $router->comprobarRutas();

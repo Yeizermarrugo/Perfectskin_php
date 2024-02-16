@@ -4,7 +4,9 @@ namespace Controllers;
 
 use Model\Cita;
 use Model\CitaServicio;
+use Model\MisCitas;
 use Model\Servicio;
+use MVC\Router;
 
 class APIController
 {
@@ -134,5 +136,29 @@ class APIController
             $cita->eliminar();
             header('Location:' . $_SERVER['HTTP_REFERER']);
         }
+    }
+
+    public static function misCitas(Router $router)
+    {
+        // Verificar si el usuario está autenticado
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        isAuth();
+
+        // Obtener el ID del usuario autenticado
+        $userId = $_SESSION['id'];
+
+        // Realizar la consulta SQL para obtener las citas del usuario con los servicios asociados
+        $consulta = "SELECT citas.id, citas.fecha, citas.hora, servicios.name AS servicio, servicios.price AS precio";
+        $consulta .= " FROM citas";
+        $consulta .= " INNER JOIN cita_servicio ON citas.id = cita_servicio.citaId";
+        $consulta .= " INNER JOIN servicios ON cita_servicio.servicioId = servicios.id";
+        $consulta .= " WHERE citas.userId = ${userId}";
+
+        // Ejecutar la consulta y obtener los resultados
+        $citas = MisCitas::SQL($consulta);
+
+        echo json_encode($citas);
     }
 }

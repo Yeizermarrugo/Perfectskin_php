@@ -11,6 +11,7 @@
         <button class="actual" type="button" data-paso="1">Servicios</button>
         <button type="button" data-paso="2">Información Cita</button>
         <button type="button" data-paso="3">Resumen</button>
+        <button type="button" data-paso="4">Mis Citas</button>
     </nav>
 
     <div id="paso-1" class="section">
@@ -46,6 +47,11 @@
     <div id="paso-3" class="section contenido-resumen">
         <h2>Resumen</h2>
         <p class="text-center">Verifica que la información sea correcta</p>
+    </div>
+
+    <div id="paso-4" class="section mis-citas">
+        <h2>Mis Citas</h2>
+        <div id="lista-citas" class="listado-servicios"></div>
     </div>
 
     <div class="paginacion">

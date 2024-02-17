@@ -18,15 +18,16 @@ class Email {
 
     public function send_email_confirmation() {
         //Crear objeto email
-        $mail = new PHPMailer();
+        $mail = new PHPMailer(true);
         $mail->isSMTP();
-        $mail->Host = 'sandbox.smtp.mailtrap.io';
+        $mail->Host = $_ENV['EMAIL_HOST'];
         $mail->SMTPAuth = true;
-        $mail->Port = 2525;
-        $mail->Username = '2cc439c567232c';
-        $mail->Password = '7cbd7298357c07';
+        $mail->Port = $_ENV['EMAIL_PORT'];
+        $mail->Username = $_ENV['EMAIL_USERNAME'];
+        $mail->Password = $_ENV['EMAIL_PASSWORD'];
+        //$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
 
-        $mail->setFrom('perfectskin@gmail.com');
+        $mail->setFrom('Perfectskincartagena@perfectskinctg.com');
         $mail->addAddress($this->email);
         $mail->Subject ='Confirmación de cuenta - Laura Nuñez PerfectSkin';
 
@@ -36,7 +37,7 @@ class Email {
         $contenido = "<html>";
         $contenido .="<head><title>Confirmar Correo Electrónico</title></head>";
         $contenido .= "<p><strong> Hola " .$this->name . "</strong> Has creado tu cuenta en Laura Nuñez Perfectskin, solo debes confirmarla presionansdo el siguiente enlace</p>";
-        $contenido .= "<p>Presiona aqui: <a href = 'http://localhost:3000/confirm-account?token=". $this->token ." '>Confirmar Cuenta<a/></p>";
+        $contenido .= "<p>Presiona aqui: <a href = '".$_ENV['APP_URL']."/confirm-account?token=". $this->token ." '>Confirmar Cuenta<a/></p>";
         $contenido .= "<p>Si tu no solicitaste esta cuenta, puedes ignorar este mensaje</p>";
         $contenido .= "</html>";
 
@@ -49,15 +50,15 @@ class Email {
 
     public function send_email_forgot(){
          //Crear objeto email
-         $mail = new PHPMailer();
+         $mail = new PHPMailer(true);
          $mail->isSMTP();
-         $mail->Host = 'sandbox.smtp.mailtrap.io';
+         $mail->Host = $_ENV['EMAIL_HOST'];
          $mail->SMTPAuth = true;
-         $mail->Port = 2525;
-         $mail->Username = '2cc439c567232c';
-         $mail->Password = '7cbd7298357c07';
+         $mail->Port = $_ENV['EMAIL_PORT'];
+         $mail->Username = $_ENV['EMAIL_USERNAME'];
+         $mail->Password = $_ENV['EMAIL_PASSWORD'];
  
-         $mail->setFrom('perfectskin@gmail.com');
+         $mail->setFrom('Perfectskincartagena@perfectskinctg.com');
          $mail->addAddress($this->email);
          $mail->Subject ='Reestablece tu password - Laura Nuñez PerfectSkin';
  
@@ -67,7 +68,7 @@ class Email {
          $contenido = "<html>";
          $contenido .="<head><title>Confirmar Correo Electrónico</title></head>";
          $contenido .= "<p><strong> Hola " .$this->name . "</strong> Has solicitado reestablecer tu contraseña en Laura Nuñez Perfectskin, solo debes confirmar presionansdo el siguiente enlace</p>";
-         $contenido .= "<p>Presiona aqui: <a href = 'http://localhost:3000/recovery-password?token=". $this->token ." '>Reestablecer Password <a/></p>";
+         $contenido .= "<p>Presiona aqui: <a href = '".$_ENV['APP_URL']."/recovery-password?token=". $this->token ." '>Reestablecer Password <a/></p>";
          $contenido .= "<p>Si tu no solicitaste esta cuenta, puedes ignorar este mensaje</p>";
          $contenido .= "</html>";
  

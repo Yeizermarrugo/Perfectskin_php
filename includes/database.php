@@ -1,6 +1,5 @@
 <?php
 
-//$db = mysqli_connect('auth-db1199.hstgr.io', 'u793083493_admin', ':d+*T79m3y9Z', 'u793083493_perfectskin');
 $db = mysqli_connect(
     $_ENV['DB_HOST'], 
     $_ENV['DB_USER'], 

@@ -11,15 +11,22 @@
             <p>Nombre: <span><?php echo $servicio->name; ?></span> </p>
             <p>Precio: <span>$<?php echo $servicio->price; ?></span> </p>
 
-            <div class="acciones">
-                <a class="boton" href="/servicios/actualizar?id=<?php echo $servicio->id; ?>">Actualizar</a>
-
-                <form action="/servicios/eliminar" method="POST">
+            <?php if ($servicio->eliminada == 1) { ?>
+                <p class="eliminada-mensaje">Este servicio está marcado como eliminado.</p>
+                <form action="/servicios/activar" method="POST">
                     <input type="hidden" name="id" value="<?php echo $servicio->id; ?>">
-
-                    <input type="submit" value="Borrar" class="boton-eliminar">
+                    <input type="submit" value="Activar" class="boton-activar">
                 </form>
-            </div>
+            <?php } else { ?>
+                <div class="acciones">
+                    <a class="boton" href="/servicios/actualizar?id=<?php echo $servicio->id; ?>">Actualizar</a>
+
+                    <form action="/servicios/eliminar" method="POST">
+                        <input type="hidden" name="id" value="<?php echo $servicio->id; ?>">
+                        <input type="submit" value="Borrar" class="boton-eliminar">
+                    </form>
+                </div>
+            <?php } ?>
         </li>
     <?php } ?>
 </ul>

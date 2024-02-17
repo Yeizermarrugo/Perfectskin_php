@@ -103,7 +103,7 @@ function siguiente() {
 
 async function consultarAPI() {
   try {
-    const url = "http://localhost:3000/api/servicios";
+    const url = '/api/servicios';
     const resultado = await fetch(url);
     const servicios = await resultado.json();
     mostrarServicios(servicios);
@@ -191,7 +191,7 @@ async function buscarHorasDisponibles(event) {
 
   const dia = new Date(fechaSeleccionada).getUTCDay();
   try {
-    const url = `http://localhost:3000/api/citasPorFecha?fecha=${fechaSeleccionada}`;
+    const url = `/api/citasPorFecha?fecha=${fechaSeleccionada}`;
     const resultado = await fetch(url);
     const servicios = await resultado.json();
 
@@ -357,7 +357,7 @@ async function reservarCita() {
     // Formatear la hora para incluir los segundos si no están presentes
     const horaFormateada = hora.includes(":") ? `${hora}:00` : hora + ":00:00";
 
-    const urlDisponibilidad = `http://localhost:3000/api/citaDisponible?fecha=${fecha}&hora=${horaFormateada}`;
+    const urlDisponibilidad = `/api/citaDisponible?fecha=${fecha}&hora=${horaFormateada}`;
     const respuestaDisponibilidad = await fetch(urlDisponibilidad);
 
     if (respuestaDisponibilidad.ok) {
@@ -369,7 +369,7 @@ async function reservarCita() {
 
       // Realizar la petición al servidor
       try {
-        const url = "http://localhost:3000/api/citas";
+        const url = "/api/citas";
         const respuesta = await fetch(url, {
           method: "POST",
           body: datos,
@@ -419,7 +419,7 @@ async function reservarCita() {
 async function cargarMisCitas() {
   try {
     // Realizar la petición para obtener las citas del usuario
-    const url = `http://localhost:3000/api/citas/mis-citas`;
+    const url = '/api/citas/mis-citas';
     const respuesta = await fetch(url);
     const misCitas = await respuesta.json();
 

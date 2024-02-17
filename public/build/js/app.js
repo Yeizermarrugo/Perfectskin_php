@@ -57,7 +57,7 @@ function siguiente() {
 }
 async function consultarAPI() {
   try {
-    const e = "http://localhost:3000/api/servicios",
+    const e = "/api/servicios",
       t = await fetch(e);
     mostrarServicios(await t.json());
   } catch (e) {
@@ -111,7 +111,7 @@ async function buscarHorasDisponibles(e) {
   const t = e.target.value,
     a = new Date(t).getUTCDay();
   try {
-    const o = "http://localhost:3000/api/citasPorFecha?fecha=" + t,
+    const o = "/api/citasPorFecha?fecha=" + t,
       n = await fetch(o),
       c = await n.json();
     if ([6].includes(a))
@@ -192,9 +192,9 @@ function mostrarResumen() {
   r.innerHTML = "<span>Nombre:</span>" + t;
   const i = new Date(a),
     s = i.getMonth(),
-    l = i.getDate() + 2,
-    d = i.getFullYear(),
-    u = new Date(Date.UTC(d, s, l)).toLocaleDateString("es-ES", {
+    d = i.getDate() + 2,
+    l = i.getFullYear(),
+    u = new Date(Date.UTC(l, s, d)).toLocaleDateString("es-ES", {
       weekday: "long",
       year: "numeric",
       month: "long",
@@ -218,7 +218,7 @@ async function reservarCita() {
     c = t.map((e) => e.id);
   if (n && e && a && o && 0 !== t.length)
     try {
-      const e = `http://localhost:3000/api/citaDisponible?fecha=${a}&hora=${
+      const e = `/api/citaDisponible?fecha=${a}&hora=${
         o.includes(":") ? o + ":00" : o + ":00:00"
       }`;
       if ((await fetch(e)).ok) {
@@ -228,7 +228,7 @@ async function reservarCita() {
           e.append("userId", n),
           e.append("servicioId", c);
         try {
-          const t = "http://localhost:3000/api/citas",
+          const t = "/api/citas",
             a = await fetch(t, { method: "POST", body: e });
           (await a.json()).resultado &&
             Swal.fire({
@@ -269,7 +269,7 @@ async function reservarCita() {
 }
 async function cargarMisCitas() {
   try {
-    const e = "http://localhost:3000/api/citas/mis-citas",
+    const e = "/api/citas/mis-citas",
       t = await fetch(e),
       a = await t.json();
     a.sort((e, t) => new Date(e.fecha) - new Date(t.fecha)), mostrarMisCitas(a);
@@ -293,14 +293,14 @@ function mostrarMisCitas(e) {
     const r = c.getMonth(),
       i = c.getDate() + 2,
       s = c.getFullYear(),
-      l = new Date(Date.UTC(s, r, i)).toLocaleDateString("es-ES", {
+      d = new Date(Date.UTC(s, r, i)).toLocaleDateString("es-ES", {
         weekday: "long",
         year: "numeric",
         month: "long",
         day: "numeric",
       }),
-      d = document.createElement("P");
-    d.classList.add("nombre-servicio"), (d.textContent = l);
+      l = document.createElement("P");
+    l.classList.add("nombre-servicio"), (l.textContent = d);
     const u = document.createElement("P");
     u.classList.add("nombre-servicio"), (u.textContent = n);
     const m = document.createElement("P");
@@ -315,7 +315,7 @@ function mostrarMisCitas(e) {
       }),
       h.appendChild(m),
       h.appendChild(u),
-      h.appendChild(d),
+      h.appendChild(l),
       h.appendChild(p),
       document.querySelector("#lista-citas").appendChild(h);
   });

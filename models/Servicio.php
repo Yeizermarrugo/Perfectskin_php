@@ -4,16 +4,18 @@ namespace Model;
 
 class Servicio extends ActiveRecord {
     protected static $table = 'servicios';
-    protected static $columnsDB = ['id','name','price'];
+    protected static $columnsDB = ['id','name','price', 'eliminada'];
 
     public $id;
     public $name;
     public $price;
+    public $eliminada;
 
     public function __construct($args = []) {
         $this->id = $args['id'] ?? null;
         $this->name = $args['name'] ?? '';
         $this->price = $args['price'] ?? '';
+        $this->eliminada = $args['eliminada'] ?? 0;
 
     }
 

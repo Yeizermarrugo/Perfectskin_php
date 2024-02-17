@@ -88,4 +88,30 @@ class ServicioController {
             header('Location: /servicios');
         }
     }
+
+    public static function activar(Router $router) {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        isAdmin();
+    
+
+        $id = $_POST['id'] ?? null;
+        $servicios = Servicio::find($id);
+               
+        if (!$servicios) {
+            // Error: Servicio no encontrado
+            Servicio::setAlerta('error', 'Servicio no encontrado');
+        } else {
+            // Servicio encontrado
+            $servicios->eliminada = 0; // Marcar el servicio como activo
+            $servicios->guardar();
+        
+            Servicio::setAlerta('exito', 'Servicio activado correctamente');
+        }
+        
+        
+        header('Location: /servicios');
+        
+    }
 }

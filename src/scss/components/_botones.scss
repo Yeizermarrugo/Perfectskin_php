@@ -9,3 +9,7 @@
 .boton-eliminar{
     @include m.boton(v.$rojo, v.$blanco);
 }
+
+.boton-activar{
+    @include m.boton(v.$verde, v.$blanco);
+}

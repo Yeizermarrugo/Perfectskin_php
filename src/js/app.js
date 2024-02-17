@@ -1,6 +1,6 @@
 let paso = 1;
 const pasoInicial = 1;
-const pasoFinal = 3;
+const pasoFinal = 4;
 
 const cita = {
   id: "",
@@ -11,6 +11,9 @@ const cita = {
 };
 
 document.addEventListener("DOMContentLoaded", function () {
+  // Llamar a la función cargarMisCitas cuando se carga la página o se cambia al paso 4
+//document.addEventListener("DOMContentLoaded", cargarMisCitas);
+//document.querySelector('[data-paso="4"]').addEventListener("click", cargarMisCitas);
   iniciarApp();
 });
 
@@ -27,6 +30,8 @@ function iniciarApp() {
   buscarHorasDisponibles();
   mostrarResumen();
   reservarCita();
+  cargarMisCitas();
+  mostrarMisCitas();
 }
 
 function mostrarSeccion() {
@@ -70,7 +75,7 @@ function paginador() {
   if (paso === 1) {
     anterior.classList.add("ocultar");
     siguiente.classList.remove("ocultar");
-  } else if (paso === 3) {
+  } else if (paso === 4) {
     anterior.classList.remove("ocultar");
     siguiente.classList.add("ocultar");
     mostrarResumen();
@@ -276,8 +281,7 @@ function mostrarResumen() {
   }
 
   if (Object.values(cita).includes("") || cita.servicios.length === 0) {
-    mostrarAlerta("Hacen falta datos", "error", ".contenido-resumen", false);
-
+    mostrarAlerta("Hacen falta datos", "error", ".contenido-resumen", false);    
     return;
   }
 
@@ -415,3 +419,98 @@ async function reservarCita() {
 
   
 }
+
+
+async function cargarMisCitas() {
+  try {
+    // Realizar la petición para obtener las citas del usuario
+    const url = `http://localhost:3000/api/citas/mis-citas`;
+    const respuesta = await fetch(url);
+    console.log("respuesta",respuesta);
+    const misCitas = await respuesta.json();
+    //console.log("Citas: ",misCitas);
+
+    // Mostrar las citas en la sección correspondiente
+    mostrarMisCitas(misCitas);
+  } catch (error) {
+    console.log(error);
+    // Manejar el error si la petición falla
+    mostrarAlerta("Hubo un error al cargar tus citas", "error", ".form");
+  }
+}
+
+
+function mostrarMisCitas(misCitas) {
+  const listaCitas = document.getElementById("lista-citas");
+
+  // Limpiar el contenido previo de la lista de citas
+  listaCitas.innerHTML = "";
+
+  // Verificar si hay citas para mostrar
+  if (misCitas.length === 0) {
+    const mensaje = document.createElement("p");
+    mensaje.textContent = "No tienes citas programadas";
+    listaCitas.appendChild(mensaje);
+    return;
+  }
+
+  // Mostrar cada cita en la lista
+  misCitas.forEach((cita) => {
+    const { servicio, precio, fecha, hora } = cita;
+
+    const fechaObj = new Date(fecha);
+    const hoy = new Date(); // Obtener la fecha actual
+
+    // Verificar si la fecha de la cita es anterior a la fecha actual
+    if (fechaObj < hoy) {
+        return; // Salir de la iteración actual si la cita es anterior a hoy
+    }
+
+    const mes = fechaObj.getMonth();
+    const dia = fechaObj.getDate() + 2;
+    const year = fechaObj.getFullYear();
+  
+    const fechaUTC = new Date(Date.UTC(year, mes, dia));
+  
+    const opciones = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    };
+    const fechaFormateada = fechaUTC.toLocaleDateString("es-ES", opciones);
+
+    const fechaCita = document.createElement("P");
+    fechaCita.classList.add("nombre-servicio");
+    fechaCita.textContent = fechaFormateada;
+
+    const horaCita = document.createElement("P");
+    horaCita.classList.add("nombre-servicio");
+    horaCita.textContent = hora;
+
+    const servicioCita = document.createElement("P");
+    servicioCita.classList.add("nombre-servicio");
+    servicioCita.textContent = servicio;
+
+    const precioServicio = document.createElement("P");
+    precioServicio.classList.add("precio-cita");
+    precioServicio.textContent = `${precio}`;
+
+    const citaDIV = document.createElement("DIV");
+    citaDIV.classList.add("servicio");
+    citaDIV.dataset.idServicio = id;
+    citaDIV.onclick = function () {
+        seleccionarServicio(servicio);
+    };
+
+    citaDIV.appendChild(servicioCita);
+    citaDIV.appendChild(horaCita);
+    citaDIV.appendChild(fechaCita);
+    citaDIV.appendChild(precioServicio);
+
+    document.querySelector("#lista-citas").appendChild(citaDIV);
+});
+
+}
+
+

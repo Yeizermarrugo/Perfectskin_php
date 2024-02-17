@@ -11,9 +11,6 @@ const cita = {
 };
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Llamar a la función cargarMisCitas cuando se carga la página o se cambia al paso 4
-//document.addEventListener("DOMContentLoaded", cargarMisCitas);
-//document.querySelector('[data-paso="4"]').addEventListener("click", cargarMisCitas);
   iniciarApp();
 });
 
@@ -78,11 +75,11 @@ function paginador() {
   } else if (paso === 4) {
     anterior.classList.remove("ocultar");
     siguiente.classList.add("ocultar");
-    mostrarResumen();
   } else {
     anterior.classList.remove("ocultar");
     siguiente.classList.remove("ocultar");
   }
+  mostrarResumen();
   mostrarSeccion();
 }
 
@@ -116,7 +113,11 @@ async function consultarAPI() {
 }
 
 function mostrarServicios(servicios) {
-  servicios.forEach((servicio) => {
+  const serviciosActivos = servicios.filter(
+    (servicio) => servicio.eliminada !== "1"
+  );
+
+  serviciosActivos.forEach((servicio) => {
     const { id, name, price } = servicio;
 
     const nombreServicio = document.createElement("P");
@@ -183,7 +184,6 @@ function seleccionarFecha() {
 async function buscarHorasDisponibles(event) {
   if (!event) {
     // Manejar el caso en que event no está definido
-    console.log("El evento no está definido");
     return;
   }
 
@@ -215,7 +215,6 @@ async function buscarHorasDisponibles(event) {
     // Mostrar las horas disponibles
     mostrarHorasDisponibles(servicios.horas_disponibles);
     cita.fecha = event.target.value;
-    console.log(cita);
   } catch (error) {
     console.log(error);
   }
@@ -242,7 +241,6 @@ function mostrarHorasDisponibles(horasDisponibles) {
 
   selectHoras.addEventListener("change", function (e) {
     cita.hora = e.target.value;
-    console.log(cita);
   });
 }
 
@@ -281,7 +279,7 @@ function mostrarResumen() {
   }
 
   if (Object.values(cita).includes("") || cita.servicios.length === 0) {
-    mostrarAlerta("Hacen falta datos", "error", ".contenido-resumen", false);    
+    mostrarAlerta("Hacen falta datos", "error", ".contenido-resumen", false);
     return;
   }
 
@@ -295,7 +293,7 @@ function mostrarResumen() {
 
   //Mostrando los servicios
   servicios.forEach((servicio) => {
-    const { id, price, name } = servicio;
+    const { price, name } = servicio;
     const contenedorServicio = document.createElement("DIV");
     contenedorServicio.classList.add("contenedor-servico");
 
@@ -362,15 +360,13 @@ async function reservarCita() {
     const urlDisponibilidad = `http://localhost:3000/api/citaDisponible?fecha=${fecha}&hora=${horaFormateada}`;
     const respuestaDisponibilidad = await fetch(urlDisponibilidad);
 
-    console.log("disponible: ", respuestaDisponibilidad.json());
-  
-    if(respuestaDisponibilidad){
+    if (respuestaDisponibilidad.ok) {
       const datos = new FormData();
       datos.append("fecha", fecha);
       datos.append("hora", hora);
       datos.append("userId", id);
       datos.append("servicioId", idServicio);
-    
+
       // Realizar la petición al servidor
       try {
         const url = "http://localhost:3000/api/citas";
@@ -378,10 +374,9 @@ async function reservarCita() {
           method: "POST",
           body: datos,
         });
-    
+
         const resultado = await respuesta.json();
-        console.log(resultado);
-    
+
         if (resultado.resultado) {
           Swal.fire({
             icon: "success",
@@ -402,8 +397,7 @@ async function reservarCita() {
           text: "Hubo un error al guardar la cita",
         });
       }
-    }
-    else{
+    } else {
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -413,22 +407,24 @@ async function reservarCita() {
     // Preparar los datos para enviar al servidor
   } catch (error) {
     console.log(error);
-    mostrarAlerta("Hubo un error al verificar la disponibilidad de la cita", "error", ".form");
+    mostrarAlerta(
+      "Hubo un error al verificar la disponibilidad de la cita",
+      "error",
+      ".form"
+    );
     return;
   }
-
-  
 }
-
 
 async function cargarMisCitas() {
   try {
     // Realizar la petición para obtener las citas del usuario
     const url = `http://localhost:3000/api/citas/mis-citas`;
     const respuesta = await fetch(url);
-    console.log("respuesta",respuesta);
     const misCitas = await respuesta.json();
-    //console.log("Citas: ",misCitas);
+
+    // Ordenar las citas por fecha de manera ascendente
+    misCitas.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
 
     // Mostrar las citas en la sección correspondiente
     mostrarMisCitas(misCitas);
@@ -438,7 +434,6 @@ async function cargarMisCitas() {
     mostrarAlerta("Hubo un error al cargar tus citas", "error", ".form");
   }
 }
-
 
 function mostrarMisCitas(misCitas) {
   const listaCitas = document.getElementById("lista-citas");
@@ -454,8 +449,10 @@ function mostrarMisCitas(misCitas) {
     return;
   }
 
-  // Mostrar cada cita en la lista
-  misCitas.forEach((cita) => {
+  const citasActivas = misCitas.filter(
+    (misCitas) => misCitas.eliminada !== "1"
+  );
+  citasActivas.forEach((cita) => {
     const { servicio, precio, fecha, hora } = cita;
 
     const fechaObj = new Date(fecha);
@@ -463,20 +460,20 @@ function mostrarMisCitas(misCitas) {
 
     // Verificar si la fecha de la cita es anterior a la fecha actual
     if (fechaObj < hoy) {
-        return; // Salir de la iteración actual si la cita es anterior a hoy
+      return; // Salir de la iteración actual si la cita es anterior a hoy
     }
 
     const mes = fechaObj.getMonth();
     const dia = fechaObj.getDate() + 2;
     const year = fechaObj.getFullYear();
-  
+
     const fechaUTC = new Date(Date.UTC(year, mes, dia));
-  
+
     const opciones = {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     };
     const fechaFormateada = fechaUTC.toLocaleDateString("es-ES", opciones);
 
@@ -500,7 +497,7 @@ function mostrarMisCitas(misCitas) {
     citaDIV.classList.add("servicio");
     citaDIV.dataset.idServicio = id;
     citaDIV.onclick = function () {
-        seleccionarServicio(servicio);
+      seleccionarServicio(servicio);
     };
 
     citaDIV.appendChild(servicioCita);
@@ -509,8 +506,5 @@ function mostrarMisCitas(misCitas) {
     citaDIV.appendChild(precioServicio);
 
     document.querySelector("#lista-citas").appendChild(citaDIV);
-});
-
+  });
 }
-
-

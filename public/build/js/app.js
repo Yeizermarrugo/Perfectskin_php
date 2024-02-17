@@ -40,10 +40,9 @@ function paginador() {
   1 === paso
     ? (e.classList.add("ocultar"), t.classList.remove("ocultar"))
     : 4 === paso
-    ? (e.classList.remove("ocultar"),
-      t.classList.add("ocultar"),
-      mostrarResumen())
+    ? (e.classList.remove("ocultar"), t.classList.add("ocultar"))
     : (e.classList.remove("ocultar"), t.classList.remove("ocultar")),
+    mostrarResumen(),
     mostrarSeccion();
 }
 function anterior() {
@@ -66,7 +65,7 @@ async function consultarAPI() {
   }
 }
 function mostrarServicios(e) {
-  e.forEach((e) => {
+  e.filter((e) => "1" !== e.eliminada).forEach((e) => {
     const { id: t, name: a, price: o } = e,
       n = document.createElement("P");
     n.classList.add("nombre-servicio"), (n.textContent = a);
@@ -108,7 +107,7 @@ function seleccionarFecha() {
     .addEventListener("change", buscarHorasDisponibles);
 }
 async function buscarHorasDisponibles(e) {
-  if (!e) return void console.log("El evento no está definido");
+  if (!e) return;
   const t = e.target.value,
     a = new Date(t).getUTCDay();
   try {
@@ -130,9 +129,7 @@ async function buscarHorasDisponibles(e) {
         void (document.getElementById("hora-placeholder").style.display =
           "inline-block")
       );
-    mostrarHorasDisponibles(c.horas_disponibles),
-      (cita.fecha = e.target.value),
-      console.log(cita);
+    mostrarHorasDisponibles(c.horas_disponibles), (cita.fecha = e.target.value);
   } catch (e) {
     console.log(e);
   }
@@ -148,7 +145,7 @@ function mostrarHorasDisponibles(e) {
     (t.style.display = "block"),
     (a.style.display = "none"),
     t.addEventListener("change", function (e) {
-      (cita.hora = e.target.value), console.log(cita);
+      cita.hora = e.target.value;
     });
 }
 function mostrarAlerta(e, t, a, o = !0) {
@@ -180,16 +177,16 @@ function mostrarResumen() {
   (c.textContent = "Resumen de cita"),
     e.appendChild(c),
     n.forEach((t) => {
-      const { id: a, price: o, name: n } = t,
-        c = document.createElement("DIV");
-      c.classList.add("contenedor-servico");
+      const { price: a, name: o } = t,
+        n = document.createElement("DIV");
+      n.classList.add("contenedor-servico");
+      const c = document.createElement("P");
+      c.textContent = o;
       const r = document.createElement("P");
-      r.textContent = n;
-      const i = document.createElement("P");
-      (i.innerHTML = "<span>Precio: </span>" + o),
-        c.appendChild(r),
-        c.appendChild(i),
-        e.appendChild(c);
+      (r.innerHTML = "<span>Precio: </span>" + a),
+        n.appendChild(c),
+        n.appendChild(r),
+        e.appendChild(n);
     });
   const r = document.createElement("P");
   r.innerHTML = "<span>Nombre:</span>" + t;
@@ -222,10 +219,9 @@ async function reservarCita() {
   if (n && e && a && o && 0 !== t.length)
     try {
       const e = `http://localhost:3000/api/citaDisponible?fecha=${a}&hora=${
-          o.includes(":") ? o + ":00" : o + ":00:00"
-        }`,
-        t = await fetch(e);
-      if ((console.log("disponible: ", t.json()), t)) {
+        o.includes(":") ? o + ":00" : o + ":00:00"
+      }`;
+      if ((await fetch(e)).ok) {
         const e = new FormData();
         e.append("fecha", a),
           e.append("hora", o),
@@ -233,20 +229,18 @@ async function reservarCita() {
           e.append("servicioId", c);
         try {
           const t = "http://localhost:3000/api/citas",
-            a = await fetch(t, { method: "POST", body: e }),
-            o = await a.json();
-          console.log(o),
-            o.resultado &&
-              Swal.fire({
-                icon: "success",
-                title: "Cita Creada",
-                text: "Tu cita fue creada correctamente",
-                button: "OK",
-              }).then(() => {
-                setTimeout(() => {
-                  window.location.reload();
-                }, 1e3);
-              });
+            a = await fetch(t, { method: "POST", body: e });
+          (await a.json()).resultado &&
+            Swal.fire({
+              icon: "success",
+              title: "Cita Creada",
+              text: "Tu cita fue creada correctamente",
+              button: "OK",
+            }).then(() => {
+              setTimeout(() => {
+                window.location.reload();
+              }, 1e3);
+            });
         } catch (e) {
           console.log(e),
             Swal.fire({
@@ -276,9 +270,9 @@ async function reservarCita() {
 async function cargarMisCitas() {
   try {
     const e = "http://localhost:3000/api/citas/mis-citas",
-      t = await fetch(e);
-    console.log("respuesta", t);
-    mostrarMisCitas(await t.json());
+      t = await fetch(e),
+      a = await t.json();
+    a.sort((e, t) => new Date(e.fecha) - new Date(t.fecha)), mostrarMisCitas(a);
   } catch (e) {
     console.log(e),
       mostrarAlerta("Hubo un error al cargar tus citas", "error", ".form");
@@ -292,7 +286,7 @@ function mostrarMisCitas(e) {
       (e.textContent = "No tienes citas programadas"), void t.appendChild(e)
     );
   }
-  e.forEach((e) => {
+  e.filter((e) => "1" !== e.eliminada).forEach((e) => {
     const { servicio: t, precio: a, fecha: o, hora: n } = e,
       c = new Date(o);
     if (c < new Date()) return;

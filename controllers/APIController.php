@@ -48,7 +48,7 @@ class APIController
 
             // Verificar si la hora actual está ocupada por alguna cita
             foreach ($citas as $cita) {
-                if ($cita->hora === $horaActual) {
+                if (($cita->hora === $horaActual) && ($cita->eliminada==0)) {
                     $horaOcupada = true;
                     break;
                 }
@@ -150,7 +150,7 @@ class APIController
         $userId = $_SESSION['id'];
 
         // Realizar la consulta SQL para obtener las citas del usuario con los servicios asociados
-        $consulta = "SELECT citas.id, citas.fecha, citas.hora, servicios.name AS servicio, servicios.price AS precio";
+        $consulta = "SELECT citas.id, citas.fecha, citas.hora, citas.eliminada, servicios.name AS servicio, servicios.price AS precio";
         $consulta .= " FROM citas";
         $consulta .= " INNER JOIN cita_servicio ON citas.id = cita_servicio.citaId";
         $consulta .= " INNER JOIN servicios ON cita_servicio.servicioId = servicios.id";

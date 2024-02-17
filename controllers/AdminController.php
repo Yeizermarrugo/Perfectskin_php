@@ -22,7 +22,7 @@ class AdminController
             header('Location: /404');
         }
 
-        $consulta = "SELECT citas.id, citas.hora, CONCAT( users.name, ' ', users.lastname) as cliente, ";
+        $consulta = "SELECT citas.id, citas.hora, citas.eliminada, CONCAT( users.name, ' ', users.lastname) as cliente, ";
         $consulta .= " users.email, users.phone, servicios.name as servicio, servicios.price  ";
         $consulta .= " FROM citas  ";
         $consulta .= " LEFT OUTER JOIN users ";
@@ -34,7 +34,7 @@ class AdminController
         $consulta .= " WHERE fecha =  '${fecha}' ";
 
        $citas = AdminCita::SQL($consulta);
-
+       
         $router->render('admin/index', [
             'name' => $_SESSION['name'],
             'citas' => $citas,

@@ -7,7 +7,6 @@ use Controllers\APIController;
 use Controllers\LoginController;
 use Controllers\CitaController;
 use Controllers\ServicioController;
-use Model\Cita;
 use MVC\Router;
 
 $router = new Router();

@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 
 <h1 class="nombre-pagina">Recuperar contraseña</h1>
 <p class="descripcion-pagina">Ingresa tu nueva contraseña</p>

@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 
 <div class="campo">
     <label for="nombre">Nombre</label>

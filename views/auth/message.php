@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 
 <h1 class="nombre-pagina">Confirma tu cuenta</h1>
 

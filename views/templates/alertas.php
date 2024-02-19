@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <?php
     foreach($alertas as $key => $mensajes):
         foreach($mensajes as $mensaje):

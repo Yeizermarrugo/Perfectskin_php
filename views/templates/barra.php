@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <div class="barra">
     <div class="usuario">
         <p><i class="fa-solid fa-user"></i> <?php echo $name ?? '' ?></p>

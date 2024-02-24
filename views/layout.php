@@ -2,8 +2,7 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7/8/9" >
+    <meta charset="UTF-8" content-type="text/html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfectskin_ctg</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;700;900&display=swap" rel="stylesheet">

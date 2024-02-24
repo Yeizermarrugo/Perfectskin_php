@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <h1 class="nombre-pagina">Crear Cuenta</h1>
 <p class=descripcion-pagina>Completa el formulario
     para crear una cuenta en nuestra plataforma.

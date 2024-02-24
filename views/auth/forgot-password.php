@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <h1 class="nombre-pagina">Olvide Password</h1>
 <p class="descripcion-pagina">Reestablecer Password</p>
 

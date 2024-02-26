@@ -496,9 +496,9 @@ function mostrarMisCitas(misCitas) {
     const citaDIV = document.createElement("DIV");
     citaDIV.classList.add("servicio");
     citaDIV.dataset.idServicio = id;
-    citaDIV.onclick = function () {
-      seleccionarServicio(servicio);
-    };
+    // citaDIV.onclick = function () {
+    //   seleccionarServicio(servicio);
+    // };
 
     citaDIV.appendChild(servicioCita);
     citaDIV.appendChild(horaCita);

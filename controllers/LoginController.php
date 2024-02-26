@@ -135,7 +135,7 @@ class LoginController{
 
     public static function register(Router $router)
     {
-        $user = new User;
+        $user = new User();
 
         // Alertas vacias
         $alertas = [];

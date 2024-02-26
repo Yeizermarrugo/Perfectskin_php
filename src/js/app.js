@@ -56,8 +56,8 @@ function mostrarSeccion() {
 function tabs() {
   const botones = document.querySelectorAll(".tabs button");
 
-  botones.forEach((boton) => {
-    boton.addEventListener("click", function (e) {
+  botones.forEach(function (boton){
+    return boton.addEventListener("click", function (e) {
       paso = parseInt(e.target.dataset.paso);
       mostrarSeccion();
       paginador();
@@ -85,7 +85,7 @@ function paginador() {
 
 function anterior() {
   const anterior = document.querySelector("#anterior");
-  anterior.addEventListener("click", () => {
+  anterior.addEventListener("click", function() {
     if (paso <= pasoInicial) return;
     paso--;
     paginador();
@@ -94,7 +94,7 @@ function anterior() {
 
 function siguiente() {
   const siguiente = document.querySelector("#siguiente");
-  siguiente.addEventListener("click", () => {
+  siguiente.addEventListener("click", function() {
     if (paso >= pasoFinal) return;
     paso++;
     paginador();
@@ -114,7 +114,7 @@ async function consultarAPI() {
 
 function mostrarServicios(servicios) {
   const serviciosActivos = servicios.filter(
-    (servicio) => servicio.eliminada !== "1"
+    function(servicio) {return servicio.eliminada !== "1"}
   );
 
   serviciosActivos.forEach(function(servicio){
@@ -148,11 +148,11 @@ function seleccionarServicio(servicio) {
   const divServicio = document.querySelector(`[data-id-servicio="${id}"]`);
 
   // Comprobar si el servicio ya fue agregado
-  const servicioYaAgregado = servicios.some((agregado) => agregado.id === id);
+  const servicioYaAgregado = servicios.some(function (agregado){return agregado.id === id});
 
   if (servicioYaAgregado) {
     // Si el servicio ya está seleccionado, removerlo
-    cita.servicios = servicios.filter((agregado) => agregado.id !== id);
+    cita.servicios = servicios.filter(function (agregado) {return agregado.id !== id});
     divServicio.classList.remove("seleccionado");
   } else {
     // Si no está seleccionado, agregarlo
@@ -228,7 +228,7 @@ function mostrarHorasDisponibles(horasDisponibles) {
   selectHoras.innerHTML = "";
 
   // Agregar las horas disponibles como opciones
-  horasDisponibles.forEach((hora) => {
+  horasDisponibles.forEach(function(hora){
     const option = document.createElement("option");
     option.value = hora;
     option.textContent = hora;
@@ -259,12 +259,12 @@ function mostrarAlerta(mensaje, tipo, elemento, desaparece = true) {
   referencia.appendChild(alerta);
 
   if (desaparece) {
-    setTimeout(() => {
+    setTimeout(function(){
       alerta.classList.add("desvanecer");
     }, 3000);
 
     // Eliminar el elemento después de completarse la transición
-    alerta.addEventListener("transitionend", () => {
+    alerta.addEventListener("transitionend", function(){
       alerta.remove();
     });
   }
@@ -292,7 +292,7 @@ function mostrarResumen() {
   resumen.appendChild(heading);
 
   //Mostrando los servicios
-  servicios.forEach((servicio) => {
+  servicios.forEach(function(servicio){
     const { price, name } = servicio;
     const contenedorServicio = document.createElement("DIV");
     contenedorServicio.classList.add("contenedor-servico");
@@ -345,7 +345,7 @@ function mostrarResumen() {
 async function reservarCita() {
   const { name, servicios, fecha, hora, id } = cita;
 
-  const idServicio = servicios.map((servicio) => servicio.id);
+  const idServicio = servicios.map(function(servicio) {return servicio.id});
 
   if (!id || !name || !fecha || !hora || servicios.length === 0) {
     mostrarAlerta("Faltan datos", "error", ".contenido-resumen", false);
@@ -383,8 +383,8 @@ async function reservarCita() {
             title: "Cita Creada",
             text: "Tu cita fue creada correctamente",
             button: "OK",
-          }).then(() => {
-            setTimeout(() => {
+          }).then(function(){
+            setTimeout(function(){
               window.location.reload();
             }, 1000);
           });
@@ -424,7 +424,7 @@ async function cargarMisCitas() {
     const misCitas = await respuesta.json();
 
     // Ordenar las citas por fecha de manera ascendente
-    misCitas.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+    misCitas.sort(function(a, b) {return new Date(a.fecha) - new Date(b.fecha)});
 
     // Mostrar las citas en la sección correspondiente
     mostrarMisCitas(misCitas);
@@ -450,9 +450,9 @@ function mostrarMisCitas(misCitas) {
   }
 
   const citasActivas = misCitas.filter(
-    (misCitas) => misCitas.eliminada !== "1"
+    function(misCitas) {return misCitas.eliminada !== "1"}
   );
-  citasActivas.forEach((cita) => {
+  citasActivas.forEach(function(cita){
     const { servicio, precio, fecha, hora } = cita;
 
     const fechaObj = new Date(fecha);

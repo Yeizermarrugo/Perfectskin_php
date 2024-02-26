@@ -37,7 +37,7 @@ class Email {
         $contenido = "<html>";
         $contenido .="<head><title>Confirmar Correo Electrónico</title></head>";
         $contenido .= "<p><strong> Hola " .$this->name . "</strong> Has creado tu cuenta en Laura Nuñez Perfectskin, solo debes confirmarla presionansdo el siguiente enlace</p>";
-        $contenido .= "<p>Presiona aqui: <a href = '".$_ENV['APP_URL']."/confirm-account?token=". $this->token ." '>Confirmar Cuenta<a/></p>";
+        $contenido .= "<p>Presiona aqui: <a href = '".$_ENV['APP_URL']."confirm-account?token=". $this->token ." '>Confirmar Cuenta<a/></p>";
         $contenido .= "<p>Si tu no solicitaste esta cuenta, puedes ignorar este mensaje</p>";
         $contenido .= "</html>";
 

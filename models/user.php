@@ -87,8 +87,6 @@ class User extends ActiveRecord
         return self::$alertas;
     }
 
-
-
     public function exists_user()
     {
         $query = " SELECT * FROM " . self::$table . " WHERE email = '" . $this->email . "' LIMIT 1";
@@ -101,7 +99,6 @@ class User extends ActiveRecord
 
         return $resultado;
     }
-
 
     public function hashPassword()
     {

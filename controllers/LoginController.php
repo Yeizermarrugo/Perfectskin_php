@@ -138,16 +138,10 @@ class LoginController
 
     public static function register(Router $router)
     {
-
-        echo "Register function called.";
         $user = new User;
-
-        //debug($_SERVER['REQUEST_METHOD']);
-        //debug($user);
 
         // Alertas vacias
         $alertas = [];
-        //debug($alertas);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user->sincronizar($_POST);
 
@@ -157,7 +151,6 @@ class LoginController
             if (empty($alertas)) {
                 // Verificar que el user no este registrado
                 $resultado = $user->exists_user();
-                //debug("Resultado",$resultado);
 
                 if ($resultado->num_rows) {
                     $alertas = User::getAlertas();
@@ -174,7 +167,6 @@ class LoginController
 
                     // Crear el user
                     $resultado = $user->guardar();
-                    //debuguear($user);
                     if ($resultado["resultado"]) {
                         header('Location: /message');
                     }

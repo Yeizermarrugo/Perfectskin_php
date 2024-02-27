@@ -25,7 +25,7 @@ class Email {
         $mail->Port = $_ENV['EMAIL_PORT'];
         $mail->Username = $_ENV['EMAIL_USERNAME'];
         $mail->Password = $_ENV['EMAIL_PASSWORD'];
-        //$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
 
         $mail->setFrom('Perfectskincartagena@perfectskinctg.com');
         $mail->addAddress($this->email);

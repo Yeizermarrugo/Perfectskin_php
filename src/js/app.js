@@ -180,70 +180,18 @@ function nombreCliente() {
 }
 
 function seleccionarFecha() {
-  // flatpickr("#example", {
-  //   minDate: new Date(),
-  //   dateFormat: "Y-m-d",
-  //   onChange: function (selectedDates, dateStr) {
-  //     const fechaSeleccionada = selectedDates[0];
-  //     const year = fechaSeleccionada.getFullYear();
-  //     const month = fechaSeleccionada.getMonth() + 1; // Sumar 1 porque los meses van de 0 a 11
-  //     const day = fechaSeleccionada.getDate();
-  //     buscarHorasDisponibles(dateStr);
-  //   },
-  // });
+  const inputFecha = document.querySelector("#fecha");
 
-  new Rolldate({
-    el: '#example',
-    confirm: function (date) {
-      // Convertir la fecha seleccionada a un objeto Date
-      const selectedDate = new Date(date);
-      const year = selectedDate.getFullYear();
-      const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
-      const day = String(selectedDate.getDate()+1).padStart(2, '0');
-
-      // Formatear la fecha en el formato YYYY-MM-DD
-      const formattedDate = `${year}-${month}-${day}`;
-      
-      // Obtener la fecha de hoy
-      const today = new Date();
-      const year2 = today.getFullYear();
-      const month2 = String(today.getMonth() + 1).padStart(2, '0');
-      const day2 = String(today.getDate()).padStart(2, '0'); 
-
-      // Formatear la fecha en el formato YYYY-MM-DD
-      const formattedDate2 = `${year2}-${month2}-${day2}`;
-      
-      // Comparar las fechas
-      if (formattedDate < formattedDate2) {
-        // La fecha seleccionada es anterior a la fecha de hoy
-        alert("La fecha seleccionada es anterior a la fecha de hoy. Por favor seleccione una fecha valida", "error", ".form");
-        return false;
-        // Aquí podrías mostrar un mensaje de error o realizar otra acción
-      } else {
-        // La fecha seleccionada es igual o posterior a la fecha de hoy
-        buscarHorasDisponibles(formattedDate)
-        // Aquí podrías realizar alguna acción adicional si lo deseas
-      }
-    },
-    lang: {
-      title: 'Selecciona la fecha',
-      cancel: 'Cancel',
-      confirm: 'Confirm',
-      year: '',
-      month: '',
-      day: ''
-    },
-
-  })
+  inputFecha.addEventListener("change", buscarHorasDisponibles);
 }
 
-async function buscarHorasDisponibles(formattedDate) {
-  if (!formattedDate) {
+async function buscarHorasDisponibles(event) {
+  if (!event) {
     // Manejar el caso en que event no está definido
     return;
   }
 
-  const fechaSeleccionada = formattedDate;
+  const fechaSeleccionada = event.target.value;
 
   const dia = new Date(fechaSeleccionada).getUTCDay();
   try {
@@ -270,7 +218,7 @@ async function buscarHorasDisponibles(formattedDate) {
     }
     // Mostrar las horas disponibles
     mostrarHorasDisponibles(servicios.horas_disponibles);
-    cita.fecha = formattedDate;
+    cita.fecha = event.target.value;
   } catch (error) {
     console.log(error);
   }

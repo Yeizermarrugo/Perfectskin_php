@@ -68,7 +68,10 @@ $script = "
         <script src='//cdn.jsdelivr.net/npm/sweetalert2@11'></script>
         <script src='build/js/app.js'></script>
         <script src='//cdn.jsdelivr.net/npm/flatpickr'></script>
+<<<<<<< HEAD
         <script src='rolldate-master/dist/rolldate.min.js'></script>
 
+=======
+>>>>>>> 0ee78e4098671dfddcb42abd426384943e9e4dbb
     "
 ?>

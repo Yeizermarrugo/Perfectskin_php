@@ -7,6 +7,7 @@
     <title>Perfectskin_ctg</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;700;900&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/2f81f6aa1c.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="/build/css/app.css">
 </head>
 

@@ -32,8 +32,7 @@
 
             <div class="campo">
                 <label for="fecha">Fecha</label>
-                <!-- <input id="fecha" type="date" min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>" /> -->
-                <input readonly type="text" id="example" placeholder="" />
+                <input id="fecha" type="date" min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>" />
             </div>
 
             <div class="campo">
@@ -67,11 +66,6 @@
 $script = "
         <script src='//cdn.jsdelivr.net/npm/sweetalert2@11'></script>
         <script src='build/js/app.js'></script>
-        <script src='//cdn.jsdelivr.net/npm/flatpickr'></script>
-<<<<<<< HEAD
-        <script src='rolldate-master/dist/rolldate.min.js'></script>
-
-=======
->>>>>>> 0ee78e4098671dfddcb42abd426384943e9e4dbb
+        
     "
 ?>

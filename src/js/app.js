@@ -215,6 +215,14 @@ async function buscarHorasDisponibles(event) {
       document.getElementById("hora-placeholder").style.display =
         "inline-block";
       return;
+    } else if (dia < new Date()) {
+
+      mostrarAlerta("No se permite seleccionar fecha anterior al dia de hoy", "error", ".form");
+      document.getElementById("fecha").value = "";
+      document.getElementById("lista-horas").style.display = "none";
+      document.getElementById("hora-placeholder").style.display =
+        "inline-block";
+      return;
     }
     // Mostrar las horas disponibles
     mostrarHorasDisponibles(servicios.horas_disponibles);

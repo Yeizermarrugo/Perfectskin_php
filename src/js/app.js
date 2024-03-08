@@ -194,10 +194,34 @@ async function buscarHorasDisponibles(event) {
   const fechaSeleccionada = event.target.value;
 
   const dia = new Date(fechaSeleccionada).getUTCDay();
+  const hoy = new Date();
+  const year = hoy.getFullYear();
+  let month = hoy.getMonth() + 1;
+  let day = hoy.getDate();
+
+  // Añadir un cero delante si el mes o el día son menores que 10
+  month = month < 10 ? '0' + month : month;
+  day = day < 10 ? '0' + day : day;
+
+  const diaHoy = `${year}-${month}-${day}`;
+  console.log(fechaSeleccionada);
+  console.log(diaHoy);
+  console.log(fechaSeleccionada < diaHoy);
+
   try {
     const url = `/api/citasPorFecha?fecha=${fechaSeleccionada}`;
     const resultado = await fetch(url);
     const servicios = await resultado.json();
+
+    if (fechaSeleccionada < diaHoy) {
+      // Es domingo, mostrar alerta y ajustar la fecha
+      mostrarAlerta("Los domingos no trabajamos", "error", ".form");
+      document.getElementById("fecha").value = "";
+      document.getElementById("lista-horas").style.display = "none";
+      document.getElementById("hora-placeholder").style.display =
+        "inline-block";
+      return;
+    }
 
     if ([6].includes(dia)) {
       // Es sábado, mostrar alerta y ajustar la fecha
@@ -215,15 +239,7 @@ async function buscarHorasDisponibles(event) {
       document.getElementById("hora-placeholder").style.display =
         "inline-block";
       return;
-    } else if (dia < new Date()) {
-
-      mostrarAlerta("No se permite seleccionar fecha anterior al dia de hoy", "error", ".form");
-      document.getElementById("fecha").value = "";
-      document.getElementById("lista-horas").style.display = "none";
-      document.getElementById("hora-placeholder").style.display =
-        "inline-block";
-      return;
-    }
+    } 
     // Mostrar las horas disponibles
     mostrarHorasDisponibles(servicios.horas_disponibles);
     cita.fecha = event.target.value;
